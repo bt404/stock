@@ -3266,15 +3266,20 @@ function filter (data) {
   for (let item of data) {
     const date = item.ban_item.jjsj;
     if (date < '2021-01-01') {
-      ret.push(item.code.substr(2, 6));
+      ret.push(`${item.code.substr(2, 6)} ${date}`);
     }
   }
-  return ret;
+
+  let filtered_ret = ret.sort((left, right) => {
+    let date_left = left.split(' ')[1];
+    let date_right = right.split(' ')[1];
+    return date_left > date_right ? 1 : -1;
+  });
+  return filtered_ret;
 }
 
 function main () {
-  fs.writeFileSync('./code.json', filter(data).join('\n'));
-  console.log(filter(data).length);
+  fs.writeFileSync('./code.json', Array.from(new Set(filter(data))).join('\n'));
 }
 
 
